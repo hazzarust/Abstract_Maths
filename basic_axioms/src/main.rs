@@ -1,15 +1,11 @@
+use functions::*;
 use num_traits::Num;
-
+mod functions;
 //ASSOCIATION
 //If the equation a * (b * c) = (a * b) * c, is true then I can 
 //call the * operation associative. Please note * != Multiplication when refered to in Algebra terms
 
-pub enum Op{
-    Multiplication,
-    Addition,
-    Division,
-    Subtraction,
-}
+
 
 pub fn association<T>(x: &[T], operator: Op) -> bool 
     where T: Copy + Num{
@@ -17,43 +13,42 @@ pub fn association<T>(x: &[T], operator: Op) -> bool
         if x.len() > 3{
             return false
         }
-        
-        let count = 0;
         match operator{
             Op::Multiplication => 
-                if x[count] * (x[count+1] * x[count+2])
-                == (x[count] * x[count+1]) * x[count+2]{
-                    return true
-                }
-                else{
-                    return false
-                }
+            association_mul(x),
             Op::Addition => 
-                if x[count] + (x[count+1] + x[count+2])
-                == (x[count] + x[count+1]) + x[count+2]{
-                    return true
-                }
-                else{
-                    return false
-                }
+            association_add(x),
             Op::Division => 
-                if x[count] / (x[count+1] / x[count+2])
-                == (x[count] / x[count+1]) / x[count+2]{
-                    return true
-                }
-                else{
-                    return false
-                }
+            association_div(x),
             Op::Subtraction => 
-                if x[count] - (x[count+1] - x[count+2])
-                == (x[count] - x[count+1]) - x[count+2]{
-                    return true
-                }
-                else{
-                    return false
-                }
-            }
+            association_sub(x),
+            };
+        
+        false
         }
+
+//IDENTITY
+//if e * a = a or e * a = e, we call the e element the identity element
+//for example, in addition, the identity element would be 0 as 4 + 0 = 4 AND 0 + 4 = 4
+//This function will let us know what our identity element is from the vector provided for each
+//operation in the Op enum. Please note I don't find this function very practical; I built it to 
+//grasp the Identity concept better.
+
+pub fn identity<T>(x: &[T], operation: Op) -> Result<&T, Error> 
+        where T: Copy + Num {
+            match operation{
+                Op::Multiplication =>
+                identity_mul(x)?,
+                Op::Addition => 
+                identity_add(x)?,
+                Op::Subtraction => 
+                identity_sub(x)?,
+                Op::Division =>
+                identity_div(x)?,
+            };
+            Err(Error::NoValueFound)
+    }
+        
 
 
 fn main() {
