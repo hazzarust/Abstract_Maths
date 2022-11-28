@@ -15,16 +15,15 @@ pub fn association<T>(x: &[T], operator: Op) -> bool
         }
         match operator{
             Op::Multiplication => 
-            association_mul(x),
+            return association_mul(x),
             Op::Addition => 
-            association_add(x),
+            return association_add(x),
             Op::Division => 
-            association_div(x),
+            return association_div(x),
             Op::Subtraction => 
-            association_sub(x),
+            return association_sub(x),
             };
         
-        false
         }
 
 //IDENTITY
@@ -38,15 +37,14 @@ pub fn identity<T>(x: &[T], operation: Op) -> Result<&T, Error>
         where T: Copy + Num {
             match operation{
                 Op::Multiplication =>
-                identity_mul(x)?,
+                return identity_mul(x),
                 Op::Addition => 
-                identity_add(x)?,
+                return identity_add(x),
                 Op::Subtraction => 
-                identity_sub(x)?,
+                return identity_sub(x),
                 Op::Division =>
-                identity_div(x)?,
+                return identity_div(x),
             };
-            Err(Error::NoValueFound)
     }
         
 
@@ -80,5 +78,27 @@ mod tests {
         let x = vec![2,4,6];
         assert!(association(&x, Op::Subtraction));
     }
+
+    #[test]
+    fn identity_test_add(){
+        let x = vec![3,7,1,6,0,-3];
+        assert_eq!(identity(&x, Op::Addition).unwrap(), &0);
+    }
+    #[test]
+    fn identity_test_sub(){
+        let x = vec![3,7,1,6,0,-3];
+        assert_eq!(identity(&x, Op::Subtraction).unwrap(), &0);
+    }
+    #[test]
+    fn identity_test_mul(){
+        let x = vec![3,7,1,6,0,-3];
+        assert_eq!(identity(&x, Op::Multiplication).unwrap(), &1);
+    }
+    #[test]
+    fn identity_test_div(){
+        let x = vec![3,7,1,6,0,-3];
+        assert_eq!(identity(&x, Op::Division).unwrap(), &1);
+    }
+    
 
 }

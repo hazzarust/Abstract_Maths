@@ -6,6 +6,7 @@ pub enum Op{
     Subtraction,
 }
 
+#[derive(PartialEq, Debug)]
 pub enum Error{
     NoValueFound,
 }
@@ -105,7 +106,7 @@ pub fn identity_sub<T>(x: &[T]) -> Result<&T, Error>
     where T: Copy + Num{
         for top_vector_x in x.iter(){
             for bottom_vector_x in x.iter(){
-                if *bottom_vector_x - *top_vector_x == *top_vector_x{
+                if *top_vector_x - *bottom_vector_x == *top_vector_x{
                     return Ok(bottom_vector_x)
                 }
             }
