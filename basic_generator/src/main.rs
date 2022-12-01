@@ -1,4 +1,5 @@
 
+
 #[derive(Debug)]
 pub enum Error{
     NoGenerator,
@@ -10,14 +11,15 @@ pub fn generator(vec: &Vec<u8>) -> Result<Vec<u8>, Error>{
     let mut results: Vec<u8> = vec![];
     let copy_vec = vec;
     for x in vec.iter(){
-        let mut computated_vec: Vec<u8> = vec.iter()
-        .map(|y|*y * *x % vec.len() as u8)
+        let mut computated_vec: Vec<u8> = vec.iter().enumerate()
+        .map(|(a, _) |(a as u8 + 1) * *x % vec.len() as u8)
         .collect();
         computated_vec.sort();
         if computated_vec == *copy_vec{
             results.push(*x);
         }else{
             continue;
+
         }
     }
     if results.len() == 0{
