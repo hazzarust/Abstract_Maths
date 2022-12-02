@@ -9,17 +9,13 @@
 
 fn main() {
 
-    let y = vec![0,2,4,6,8,10];
-    addition_inverse(y);
 }
 
-fn addition_closure (v: Vec<u8>) -> bool{
+fn addition_closure (v: &Vec<i8>, modulo: i8) -> bool{
         let clone = v.clone();
-        println!("{:?}", clone);
         for x in v.iter(){
             for y in v.iter(){
-                let num = (*y + *x) % v.len() as u8;
-                println!("{}", num);
+                let num = (*y + *x) % modulo;
                     if clone.contains(&num) == false{
                         return false
                     }
@@ -31,39 +27,67 @@ fn addition_closure (v: Vec<u8>) -> bool{
 //make a function that displays every element in a vector and its inverses next to it
 //to find a inverse we can do n - the number 
 //[0,2,4,6,8,10] for mod 12
-fn addition_inverse(v: Vec<i8>){
-    let modulo_vec: Vec<i8> = v.iter()
-    .map(|y| y % 12 as i8)
-    .collect();
+pub fn addition_inverse(v: &Vec<i8>, modulo: i8) -> bool{
 
-    
-    let inverse_vec: Vec<i8> = modulo_vec.iter()
+    let inverse_vec: Vec<i8> = v.iter()
         .map(|y| {
             let y = 0 - y;
-            y.rem_euclid(12) 
+            y.rem_euclid(modulo) 
 
         })
         .collect();
-
-        
-    modulo_vec.iter()
-    .zip(inverse_vec.iter())
-    .for_each(|(a,b)| println!("Inverse of {} is : {}",a,b));
+    
+    for x in inverse_vec.iter(){
+        if v.contains(&x) == false{
+            return false
+        }
+    }
+    true
 }
-      
 
+pub fn subgroup_verifier(vec: &Vec<i8>, subgroup_in_question: &Vec<i8>)-> bool{
+    //will then see if the vector satisfies the closure and inverse.
+    let modulo = vec.len() as i8;
+    if addition_closure(&subgroup_in_question, modulo) == true && addition_inverse(&subgroup_in_question, modulo) == true{
+        println!("{:?} is a subgroup of {:?}", subgroup_in_question, vec);
+        return true
+    }
+    else{
+        println!("{:?} is not subgroup of {:?}", subgroup_in_question, vec);
+        return false
+    }
+}
 
-     
+pub fn order_of_elements(vec: &Vec<i8>, modulo: i8){
+    //gets the order of every element in group 
+    let mut results: Vec<Vec<i8>> = vec![];
+    for x in vec.iter(){
+        let computated_vec: Vec<i8> = vec.iter().enumerate()
+        .map(|(a, _)|{
+            let a = x * (a as i8 + 1);
+            a.rem_euclid(modulo)
+        })
+        .collect();
 
-
+        results.push(computated_vec);
+        }
+        
+    }
+    
     #[cfg(test)]
     mod tests {
         use super::*;
         #[test]
         fn test_addition_closuer(){
-            let x = vec![0,1,2,3,4,5,6,7,8,9,10,11];
-            assert_eq!(true, addition_closure(x));
-            let y = vec![0,1,2,4,10,11];
-            assert_eq!(false, addition_closure(y))
+            let analog_clock = vec![0,1,2,3,4,5,6,7,8,9,10,11];
+            let x = vec![0,2,4,6,8,10];
+            let y = vec![0,2,4,6,8];
+            assert_eq!(false, subgroup_verifier(&analog_clock, &y));
+            assert_eq!(true, subgroup_verifier(&analog_clock, &x));
         }
     }
+
+
+    //v.iter()
+    //.zip(inverse_vec.iter())
+    //.for_each(|(a,b)| println!("Inverse of {} is : {}",a,b));
